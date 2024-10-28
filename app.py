@@ -1,7 +1,7 @@
 import streamlit as st
-import pinecone
 import os
-from boto_testing import titan_multimodal_embedding
+#from boto_testing import titan_multimodal_embedding
+from upsert_vectors import titan_text_embedding
 # Initialize Pinecone
 from pinecone import Pinecone
 from dotenv import load_dotenv
@@ -9,7 +9,8 @@ load_dotenv()
 
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 # Define the Pinecone index name
-index_name = "bedrock-testing"
+#index_name = "bedrock-testing"
+index_name = "enriched-claude-test"
 index = pc.Index(index_name)
 
 # Streamlit app
@@ -38,16 +39,22 @@ if st.button("Query"):
     if query_text or (image_path and not ignore_image):
         # Perform the query
         # Embed the query
-        query_embedding = titan_multimodal_embedding(description=query_text, image_path=image_path if not ignore_image else None)
+        #query_embedding = titan_multimodal_embedding(description=query_text, image_path=image_path if not ignore_image else None)
 
-        response = index.query(vector=query_embedding["embedding"], top_k=5, include_metadata=True)
+        # just embed with the text-only model
+        query_embedding =  titan_text_embedding(text=query_text)
 
-        st.write(response)
+        response = index.query(vector=query_embedding["embedding"], top_k=10, include_metadata=True)
+
+        #st.write(response)
         for r in response["matches"]:
-            # Display the image, text, and score as a row
-            st.write(f"Score: {r['score']}")
-            st.image(r["metadata"]["filepath"])
-            st.write(r["metadata"]["transcript"])
+            with st.expander(f"Match with Score: {r['score']}"):
+                st.markdown(f"**Score:** {r['score']}")
+                st.image(r["metadata"]["filepath"], caption="Matched Image")
+                st.markdown(f"**Transcript:** {r['metadata']['transcript']}")
+                st.markdown(f"**Contextual Frame Description:** {r['metadata']['contextual_frame_description']}")
+                st.markdown(f"**Timestamp Start:** {r['metadata']['timestamp_start']}")
+                st.markdown(f"**Timestamp End:** {r['metadata']['timestamp_end']}")
 
     else:
         st.write("Please enter text or image path to query.")
