@@ -2,6 +2,7 @@ import streamlit as st
 import os
 #from boto_testing import titan_multimodal_embedding
 from upsert_vectors import titan_text_embedding
+from claude_utils import ask_claude_vqa_response
 # Initialize Pinecone
 from pinecone import Pinecone
 from dotenv import load_dotenv
@@ -44,7 +45,7 @@ if st.button("Query"):
         # just embed with the text-only model
         query_embedding =  titan_text_embedding(text=query_text)
 
-        response = index.query(vector=query_embedding["embedding"], top_k=10, include_metadata=True)
+        response = index.query(vector=query_embedding["embedding"], top_k=5, include_metadata=True)
 
         #st.write(response)
         for r in response["matches"]:
@@ -56,5 +57,10 @@ if st.button("Query"):
                 st.markdown(f"**Timestamp Start:** {r['metadata']['timestamp_start']}")
                 st.markdown(f"**Timestamp End:** {r['metadata']['timestamp_end']}")
 
+
+        # ask claude for an explanation of the returned results.
+
+        claude_explanation = ask_claude_vqa_response(query_text, response["matches"])
+        st.markdown(f"**Claude Explanation:** {claude_explanation}")
     else:
         st.write("Please enter text or image path to query.")

@@ -1,6 +1,8 @@
 import json
 import logging
 import base64
+from botocore.exceptions import ClientError
+
 
 MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
 MAX_TOKENS = 256
@@ -19,6 +21,11 @@ where that information came from.
 
 from anthropic import AnthropicBedrock
 
+# Logger setup
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
 
 def convert_image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
@@ -28,14 +35,88 @@ def convert_image_to_base64(image_path):
     return base64_string
 
 
+def format_messages_for_claude(user_query, vdb_response):
+    """
+    Formats the user's query and the vector database response into a structured message for Claude.
+    
+    Args:
+        user_query (str): The user's query.
+        vdb_response (list): The response from the vector database, containing images and text.
+    
+    Returns:
+        list: A list of messages formatted for Claude.
+    """
+    messages = [{"role": "user", "content": []}]
+    # add in the first query
+    new_content = [{"type": "text", "text": "The user query is: " + user_query}]
+    # we alternate between text, image, and text, where we introduce the iamge, then the text, then the next image, and so on.
+    # we append three messages at a time, one for the image, one for the text, and one for the next image.
+
+    for item in vdb_response:
+        img_b64 = convert_image_to_base64(item["metadata"]["filepath"])
+        new_content.extend([
+            {
+            "type": "text",
+            "text": "Image: " + item["metadata"]["filepath"],
+            },
+            {
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/png",
+                "data": img_b64
+            }
+            },
+            {
+            "type": "text",
+            "text": "Contextual description: " + item["metadata"]["contextual_frame_description"]
+            },
+            {
+                "type": "text",
+                "text": "Transcript: " + item["metadata"]["transcript"]
+            }
+        ])
+    #reassign
+    messages[0]["content"] = new_content
+    return messages
+
+def ask_claude_vqa_response(user_query, vdb_response):
+    """
+    Sends the user's query and the vector database response to Claude and gets a response.
+    
+    Args:
+        user_query (str): The user's query.
+        vdb_response (list): The response from the vector database, containing images and text.
+    
+    Returns:
+        str: The response from Claude.
+    """
+    client = AnthropicBedrock()
+    messages = format_messages_for_claude(user_query, vdb_response)
+    system_prompt = '''
+
+You are a friendly assistant helping people interpret their videos at their company.
+
+You will recieve frames of these videos, with descriptions of what has happened in the frames, as well as a user query
+
+Your job is to ingest the images and text, and respond to the user's query or question based on the context provided.
+
+Refer back to the images and text provided to guide the user to the appropriate slide, section, webinar, or talk
+where the information they are looking for is located.
+    '''
+    response = client.messages.create(
+            model=MODEL,
+            max_tokens=MAX_TOKENS * 10,
+            system=system_prompt,
+            messages=messages
+        )
+    return response.content[0].text
+    
+
+
 def ask_claude(img, text):
+    # best for one off queries
     client = AnthropicBedrock(
-    # Authenticate by either providing the keys below or use the default AWS credential providers, such as
-    # using ~/.aws/credentials or the "AWS_SECRET_ACCESS_KEY" and "AWS_ACCESS_KEY_ID" environment variables.
-    # Temporary credentials can be used with aws_session_token.
-    # Read more at https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html.
-    # aws_region changes the aws region to which the request is made. By default, we read AWS_REGION,
-    # and if that's not present, we default to us-east-1. Note that we do not read ~/.aws/config for the region.
     aws_region="us-east-1")
     if img:
         img_b64 = convert_image_to_base64(img)
@@ -65,6 +146,8 @@ def ask_claude(img, text):
             messages=[{"role": "user", "content": text}]
         )
     return message.content[0].text
+
+
 
 def make_claude_transcript_summary(transcript):
     client = AnthropicBedrock(
@@ -121,6 +204,7 @@ import time
 if __name__ == "__main__":
     start = time.time()
     print(system_prompt)
-    print(ask_claude("./mlsearch_webinar/frame_0140.png", "What's in this image?"))
+    print(ask_claude("./mlsearch_webinar/frame_0018.png", "What's in this image?"))
+    print(ask_claude_vqa_response("What is the context of this image?", [{"metadata": {"filepath": "./mlsearch_webinar/frame_0018.png", "contextual_frame_description": "This is a frame of a video about language distributions in training data for ROBERTA"}}]))
     print(f"Time taken: {time.time() - start} seconds")
 
