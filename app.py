@@ -64,3 +64,8 @@ if st.button("Query"):
         st.markdown(f"**Claude Explanation:** {claude_explanation}")
     else:
         st.write("Please enter text or image path to query.")
+
+
+# good queries
+# The interview spoke about mad libs for robots. What is that about?
+# At some point, the interviewer spoke about marrying customs. What was that about?
