@@ -118,20 +118,22 @@ if __name__ == "__main__":
 
     for video_path in video_files:
         transcription = transcribe_video(video_path)
+
+        video_filename = os.path.splitext(os.path.basename(video_path))[0]
         
         # Write transcription out as json
-        transcription_filename = os.path.join(transcriptions_dir, os.path.splitext(os.path.basename(video_path))[0] + "_transcription.json")
+        transcription_filename = os.path.join(transcriptions_dir, video_filename + "_transcription.json")
         with open(transcription_filename, "w") as f:
             json.dump(transcription["text"], f)
         
         frames = extract_frames(frames_dir, video_path, INTERVAL)
         frames_and_words = assign_words_to_frames(transcription, frames)
         
-        frames_and_words_filename = os.path.join(frames_and_words_dir, os.path.splitext(os.path.basename(video_path))[0] + "_frames_and_words.json")
+        frames_and_words_filename = os.path.join(frames_and_words_dir, video_filename + "_frames_and_words.json")
         with open(frames_and_words_filename, "w") as f:
             json.dump(frames_and_words, f)
         
-        all_videos_data[video_path] = {
+        all_videos_data[video_filename] = {
             "transcription": transcription_filename,
             "frames_and_words": frames_and_words_filename
         }
