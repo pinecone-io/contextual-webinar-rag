@@ -98,7 +98,7 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     # read in as json
-    file_path = './finalized_data.json'
+    file_path = './data/finalized_data.json'
     with open(file_path, "r") as f:
         data = json.load(f)
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # turn the list of dictionaries into a dataframe
     df = pd.DataFrame(final_vectors)
     print(df.head())
-    index_name="enriched-claude-test"
+    index_name="enriched-claude-vqa"
     pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
 

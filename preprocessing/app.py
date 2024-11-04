@@ -11,16 +11,16 @@ load_dotenv()
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 # Define the Pinecone index name
 #index_name = "bedrock-testing"
-index_name = "enriched-claude-test"
+index_name = "enriched-claude-vqa"
 index = pc.Index(index_name)
 
 # Streamlit app
-st.title("Pinecone Query App")
+st.title("Visual QA over Videos with Pinecone, Claude and AWS")
 
 # Input text for query
 query_text = st.text_input("Enter text to query the Pinecone index:")
 # List files in the ./mlsearch_webinar directory
-directory_path = "./mlsearch_webinar"
+directory_path = "./data/frames/mlsearch_webinar"
 files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
 
 # Dropdown for selecting a file

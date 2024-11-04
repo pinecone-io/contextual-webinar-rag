@@ -5,7 +5,7 @@ from claude_utils import create_contextual_frame_description, make_claude_transc
 from tqdm import tqdm
 
 import json
-with open("all_videos_data.json", "r") as f:
+with open("./data/all_videos_data.json", "r") as f:
     all_videos_data = json.load(f)
 
 
@@ -39,5 +39,5 @@ for video, data in all_videos_data.items():
         finalized_data.append(new_pair)
 
 # write out the finalized data
-with open("finalized_data.json", "w") as f:
+with open("./data/finalized_data.json", "w") as f:
     json.dump(finalized_data, f)

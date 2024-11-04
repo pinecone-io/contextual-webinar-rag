@@ -1,9 +1,12 @@
 import ffmpeg
-import boto3
 from transformers import pipeline
 import os
 import torch
-import json
+import json 
+from config import videos_dir, data_dir
+
+# Important Globals
+## seconds to walk over the videos for
 INTERVAL = 45
 
 
@@ -15,22 +18,31 @@ def transcribe_video(video_path):
     return transcription
 
 # Step 2: Extract Frames and Pair with Dialogue
-def extract_frames(video_path, interval):
+def extract_frames(frames_output_path, video_path, interval):
 
-    output_dir = os.path.splitext(video_path)[0]
-    os.makedirs(output_dir, exist_ok=True)
+    # output dir will be named after the video file
+    # this grabs just the name of the video file without the extension
+    output_dir = os.path.splitext(os.path.basename(video_path))[0]
+    # this is where the frames will be stored, under the name of the video in a folder
+    frame_output = os.path.join(frames_output_path, output_dir)
+    try:
+        os.mkdir(frame_output)
+    except FileExistsError:
+        print(f"Folder already exists for videofile {video_path}")
+        print("Please delete it to start fresh or ensure it is empty.")
     
     # Use ffmpeg to extract frames
     (
         ffmpeg
         .input(video_path)
         .filter('fps', fps=1/interval)
-        .output(f'{output_dir}/frame_%04d.png')
+        # this sets the output to be a frame every Interval seconds
+        .output(f'{frame_output}/frame_%04d.png')
         .run()
     )
     
     # Collect the frame file paths
-    frame_files = sorted([os.path.join(output_dir, f) for f in os.listdir(output_dir) if f.endswith('.png')])
+    frame_files = sorted([os.path.join(frame_output, f) for f in os.listdir(frame_output) if f.endswith('.png')])
     # create a dictionary of frame file paths and their corresponding timestamps according to interval and video length
 
     frames_and_intervals = []
@@ -43,7 +55,7 @@ def extract_frames(video_path, interval):
         frames_and_intervals.append(single_frame)
         interval_start+=interval
     
-    # get vieo duration and make the last frame the same as the duration
+    # get video duration and make the last frame the same as the duration
     video_duration = ffmpeg.probe(video_path)['format']['duration']
     final_frame_start_time = frames_and_intervals[-1]["timestamp"][0]
     frames_and_intervals[-1]["timestamp"] = (final_frame_start_time, float(video_duration))
@@ -86,32 +98,49 @@ def align_frames_with_dialogue(frames, transcription):
 
 
 if __name__ == "__main__":
-    video_files = ["mlsearch_webinar.mp4"]  # List of video files
+    # read in video files from data directory
+    video_files = os.listdir(videos_dir)
+    print(video_files)
+    # add root dir to video files
+    video_files = [os.path.join(videos_dir, f) for f in video_files]
 
     all_videos_data = {}
+    transcriptions_dir = os.path.join(data_dir, "transcriptions")
+    frames_and_words_dir = os.path.join(data_dir, "frames_and_words")
+    frames_dir = os.path.join(data_dir, "frames")
+    # folder setup
+    try:
+        os.mkdir(transcriptions_dir)
+        os.mkdir(frames_and_words_dir)
+        os.mkdir(frames_dir)
+    except FileExistsError:
+        print("Folders already exist. Please delete them to start fresh or ensure they are empty.")
 
     for video_path in video_files:
         transcription = transcribe_video(video_path)
+
+        video_filename = os.path.splitext(os.path.basename(video_path))[0]
         
         # Write transcription out as json
-        transcription_filename = os.path.splitext(video_path)[0] + "_transcription.json"
+        transcription_filename = os.path.join(transcriptions_dir, video_filename + "_transcription.json")
         with open(transcription_filename, "w") as f:
             json.dump(transcription["text"], f)
         
-        frames = extract_frames(video_path, INTERVAL)
+        frames = extract_frames(frames_dir, video_path, INTERVAL)
         frames_and_words = assign_words_to_frames(transcription, frames)
         
-        frames_and_words_filename = os.path.splitext(video_path)[0] + "_frames_and_words.json"
+        frames_and_words_filename = os.path.join(frames_and_words_dir, video_filename + "_frames_and_words.json")
         with open(frames_and_words_filename, "w") as f:
             json.dump(frames_and_words, f)
         
-        all_videos_data[video_path] = {
+        all_videos_data[video_filename] = {
             "transcription": transcription_filename,
             "frames_and_words": frames_and_words_filename
         }
 
     # Optionally, write all_videos_data to a summary file
-    with open("all_videos_data.json", "w") as f:
+    all_videos_data_path = data_dir / "all_videos_data.json"
+    with open(all_videos_data_path, "w") as f:
         json.dump(all_videos_data, f)
 
 
