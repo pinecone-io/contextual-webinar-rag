@@ -10,8 +10,6 @@ load_dotenv()
 # turn data into dataframe
 import pandas as pd
 
-
-
 # iterate over dataframe, and embed vectors using titan multimodal
 
  
