@@ -198,13 +198,4 @@ def create_contextual_frame_description(frame_caption_index, frame_caption_pairs
     return rich_summary
 
 
-# time the time it takes to run the function
-import time
-
-if __name__ == "__main__":
-    start = time.time()
-    print(system_prompt)
-    print(ask_claude("./mlsearch_webinar/frame_0018.png", "What's in this image?"))
-    print(ask_claude_vqa_response("What is the context of this image?", [{"metadata": {"filepath": "./mlsearch_webinar/frame_0018.png", "contextual_frame_description": "This is a frame of a video about language distributions in training data for ROBERTA"}}]))
-    print(f"Time taken: {time.time() - start} seconds")
 

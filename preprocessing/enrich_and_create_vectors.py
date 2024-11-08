@@ -17,7 +17,6 @@ for video, data in all_videos_data.items():
     with open(data["frames_and_words"], "r") as f:
         frame_caption_pairs = json.load(f)
 
-    # here, we could add a line to force claude to cache the transcript summary somehow...
     transcript_summary = make_claude_transcript_summary(transcript=transcript)
 
     print(transcript_summary)
@@ -27,8 +26,7 @@ for video, data in all_videos_data.items():
             frame_caption_index = i, 
             frame_caption_pairs=frame_caption_pairs, 
             transcript_summary=transcript_summary)
-        #pair["contextual_frame_description"] = contextual_frame_description
-    # # write out the updated frame caption pairs
+    # write out the updated frame caption pairs
         new_pair = {
             "frame_path": pair["frame_path"],
             "words": pair["words"],

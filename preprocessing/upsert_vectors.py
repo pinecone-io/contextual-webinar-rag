@@ -1,5 +1,6 @@
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
+from config import index_name
 import os
 import json
 import boto3
@@ -9,8 +10,6 @@ load_dotenv()
 
 # turn data into dataframe
 import pandas as pd
-
-
 
 # iterate over dataframe, and embed vectors using titan multimodal
 
@@ -132,7 +131,6 @@ if __name__ == "__main__":
     # turn the list of dictionaries into a dataframe
     df = pd.DataFrame(final_vectors)
     print(df.head())
-    index_name="enriched-claude-vqa"
     pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
 
