@@ -3,6 +3,9 @@ A simplified Contextual Video RAG implementation using Pinecone, AWS, and Claude
 
 Ever wanted to ask questions over your video data, such as Youtube, Zoom webinars, recorded meetings, etc? This application aims to create a RAG chatbot over these content using contextual retrieval and Pinecone, AWS, and Claude.
 
+This branch contains the **Streamlit Web App** version of the implementation. This allows you to run a local web app to interact with the RAG chatbot, and uses a makefile to make the data preprocessing smoother. Please read the following section to ensure you have the appropriate prerequisites before proceeding.
+
+If you'd rather work in Sagemaker Notebook, use the webinar-notebook branch above!
 ## Before you Begin
 
 This repo presents the RAG solution in two ways: one using scripting and makefiles, to create a Streamlit application, and another using a notebook intended for use on Sagemaker.
@@ -10,24 +13,6 @@ This repo presents the RAG solution in two ways: one using scripting and makefil
 You'll also need access to AWS Bedrock, Pinecone (via an API Key), and Claude specifically via Bedrock.
 
 Finally, you need to add the videos you'd like to process under a folder called data, with a subfolder called videos. Leave them in .mp4 format. If you have access to your own Youtube channel, downloading videos from the console there will be perfect!
-
-
-### Using Sagemaker Notebooks
-
-First, ensure you have the appropriate permissions to use Sagemaker, Bedrock, and Bedrock inside Sagemaker.
-
-Then, create a notebook instance with the following configurations:
-
-- a powerful compute instance, we used ml.p3.2xlarge.
-- link to this public repo, so you can import all scripts (you can also fork this repo and link that instead, in that case you will need to auth your access)
-- the lifecycle_configuration.sh script, which will install packages on notebooks startup
-- 16gb volume size, in case you add a lot of videos
-
-**It's extremely important to use the lifecycle config script, otherwise you may run into compatibility issues**
-
-When selecting the kernel, use the conda_python3 environment.
-
-Next, upload your data as described above (video mp4 files under ./data/videos)
 
 ### Running the Scripts Locally
 
@@ -102,10 +87,8 @@ For more information on available commands, you can use:
 make help
 ```
 
-It's easiest to run the whole pipeline (setup) and then run the streamlit app.
+It's easiest to run the whole pipeline (setup) and then run the Streamlit app.
 
-From there, the streamlit app should pop up locally and you can start querying!
-
-
+From there, the Streamlit app should pop up locally and you can start querying!
 
 
