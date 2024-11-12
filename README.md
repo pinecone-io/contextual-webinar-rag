@@ -3,7 +3,7 @@ A simplified Contextual Video RAG implementation using Pinecone, AWS, and Claude
 
 Ever wanted to ask questions over your video data, such as Youtube, Zoom webinars, recorded meetings, etc? This application aims to create a RAG chatbot over these content using contextual retrieval and Pinecone, AWS, and Claude.
 
-This branch contains the Streamlit Web App version of the implementation. This allows you to run a local web app to interact with the RAG chatbot, and uses a makefile to make the data preprocessing smoother. Please read the following section to ensure you have the appropriate prerequisites before proceeding.
+This branch contains the **Streamlit Web App** version of the implementation. This allows you to run a local web app to interact with the RAG chatbot, and uses a makefile to make the data preprocessing smoother. Please read the following section to ensure you have the appropriate prerequisites before proceeding.
 
 If you'd rather work in Sagemaker Notebook, use the webinar-notebook branch above!
 ## Before you Begin
