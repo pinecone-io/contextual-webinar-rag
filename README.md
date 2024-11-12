@@ -17,9 +17,9 @@ Don't have a good video in mind? We used our recent webinar on multilingual sema
 **There may be some dependency issues concerning ffmpeg when running the notebook. Simply uninstall and reinstall ffmpeg-python using conda to resolve**
 
 
-### Using Sagemaker Notebooks
+### Using SageMaker Notebooks
 
-First, ensure you have the appropriate permissions to use Sagemaker, Bedrock, and Bedrock inside Sagemaker.
+First, ensure you have the appropriate permissions to use SageMaker, Bedrock, Claude models, and Bedrock inside SageMaker.
 
 Then, create a notebook instance with the following configurations:
 
@@ -28,7 +28,7 @@ Then, create a notebook instance with the following configurations:
 - the lifecycle_configuration.sh script, which will install packages on notebooks startup
 - 16gb volume size, in case you add a lot of videos
 
-**It's extremely important to use the lifecycle config script, otherwise you may run into compatibility issues**
+**It's extremely important to use the lifecycle config script, otherwise you may run into compatibility issues.**
 
 When selecting the kernel, use the conda_python3 environment.
 
