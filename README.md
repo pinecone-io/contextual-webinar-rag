@@ -10,7 +10,11 @@ you must have access to SageMaker notebook instances.
 
 You'll also need access to AWS Bedrock, Pinecone (via an API Key), and Claude specifically via Bedrock.
 
-Finally, you need to add the videos you'd like to process under a folder called data, with a subfolder called videos. Leave them in .mp4 format. If you have access to your own Youtube channel, downloading videos from the console there will be perfect!
+Finally, you need to add the videos you'd like to process under a folder called data, with a subfolder called videos. Leave them in .mp4 format. If you have access to your own Youtube channel, downloading videos from the console there will be perfect! 
+
+Don't have a good video in mind? We used our recent webinar on multilingual semantic search, located [here](https://www.youtube.com/watch?v=moHIBWZiYdY)
+
+**There may be some dependency issues concerning ffmpeg when running the notebook. Simply uninstall and reinstall ffmpeg-python using conda to resolve**
 
 
 ### Using Sagemaker Notebooks
@@ -19,7 +23,7 @@ First, ensure you have the appropriate permissions to use Sagemaker, Bedrock, an
 
 Then, create a notebook instance with the following configurations:
 
-- a powerful compute instance
+- a powerful compute instance (we used ml.t2.2xlarge)
 - link to this public repo branch, so you can import all scripts (you can also fork this repo and link that instead, in that case you will need to auth your access)
 - the lifecycle_configuration.sh script, which will install packages on notebooks startup
 - 16gb volume size, in case you add a lot of videos
@@ -29,6 +33,9 @@ Then, create a notebook instance with the following configurations:
 When selecting the kernel, use the conda_python3 environment.
 
 Next, upload your data as described above (video mp4 files under ./data/videos), and run the notebook.
+
+The notebook will guide you through on processing the data, creating context with Claude, creating the embeddings, and finally querying the chatbot.
+
 
 
 
