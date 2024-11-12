@@ -5,11 +5,9 @@ import os
 import json
 import boto3
 import base64
+import pandas as pd
 
 load_dotenv()
-
-# turn data into dataframe
-import pandas as pd
 
 # iterate over dataframe, and embed vectors using titan multimodal
 

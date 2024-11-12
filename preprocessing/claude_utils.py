@@ -161,20 +161,20 @@ def make_claude_transcript_summary(transcript):
     )
     return message.content[0].text
 
-def create_contextual_frame_description(frame_caption_index, frame_caption_pairs, transcript_summary, window=60, frame_width=15):
+def create_contextual_frame_description(frame_caption_index, frame_caption_pairs, transcript_summary):
     # frame caption pair will have an image, and a transcript. Window is in seconds
     client = AnthropicBedrock(
     aws_region="us-east-1")
 
     # gather context, look 4 frame widths before and after. Make sure not to go out of bounds if near beginning or end of video.
     
-    surrounding_frames = frame_caption_pairs[max(0, frame_caption_index - 4 * frame_width):frame_caption_index + 1]
+    #surrounding_frames = frame_caption_pairs[max(0, frame_caption_index - 4 * frame_width):frame_caption_index + 1]
 
     current_frame = frame_caption_pairs[frame_caption_index]
 
     # summarize past frames
     # removed for now
-   #past_frames_summary = make_claude_transcript_summary(" ".join([f["words"] for f in surrounding_frames]))
+    # past_frames_summary = make_claude_transcript_summary(" ".join([f["words"] for f in surrounding_frames]))
     meta_prompt = f'''
 
     You are watching a video and trying to explain what has happened in the video using a global summary, some recent context, and the transcript of the current frame.
