@@ -3,7 +3,8 @@
 set -e
 
 # OVERVIEW
-# This script installs all necessary software for running the DeepComposer GAN notebook.
+# This script installs all necessary software for running the the notebook
+# originally taken from https://github.com/aws-samples/aws-deepcomposer-samples/blob/master/gan/Lifecycle_configurations.sh
 
 sudo -u ec2-user -i <<'EOF'
 ENVIRONMENT=python3
