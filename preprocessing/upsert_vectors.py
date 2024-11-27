@@ -10,8 +10,6 @@ import streamlit as st
 from tqdm import tqdm
 import toml
 
-load_dotenv()
-# read in all variables in streamlit.toml, and set them as environment variables
 
 def load_streamlit_toml(file_path):
     with open(file_path, "r") as f:
@@ -22,8 +20,7 @@ def load_streamlit_toml(file_path):
 load_streamlit_toml(".streamlit/secrets.toml")
 
 
-
-# iterate over dataframe, and embed vectors using titan multimodal
+load_dotenv()
 
 boto3_session = boto3.session.Session()
 region_name = 'us-east-1'
