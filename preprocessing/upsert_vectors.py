@@ -11,12 +11,10 @@ from tqdm import tqdm
 import toml
 
 
-load_dotenv()
-
 boto3_session = boto3.session.Session(
     aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"],
     aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
-    aws_session_token=st.secrets["AWS_SESSION_TOKEN"]
+    #aws_session_token=st.secrets["AWS_SESSION_TOKEN"]
 )
 region_name = 'us-east-1'
 
