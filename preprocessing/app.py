@@ -1,6 +1,18 @@
 import streamlit as st
 import os
 
+
+# Load AWS credentials from Streamlit secrets and set environment variables
+os.environ["AWS_ACCESS_KEY_ID"] = st.secrets["AWS_ACCESS_KEY_ID"]
+os.environ["AWS_SECRET_ACCESS_KEY"] = st.secrets["AWS_SECRET_ACCESS_KEY"]
+os.environ["AWS_DEFAULT_REGION"] = st.secrets["AWS_DEFAULT_REGION"]
+
+# Include AWS_SESSION_TOKEN if using temporary credentials
+if "AWS_SESSION_TOKEN" in st.secrets:
+    os.environ["AWS_SESSION_TOKEN"] = st.secrets["AWS_SESSION_TOKEN"]
+
+
+
 # from boto_testing import titan_multimodal_embedding
 from upsert_vectors import titan_text_embedding
 from claude_utils import ask_claude_vqa_response
