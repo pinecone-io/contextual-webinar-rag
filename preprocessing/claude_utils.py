@@ -94,7 +94,7 @@ def ask_claude_vqa_response(user_query, vdb_response):
     Returns:
         str: The response from Claude.
     """
-    client = AnthropicBedrock()
+    client = AnthropicBedrock(aws_region="us-east-1")
     messages = format_messages_for_claude(user_query, vdb_response)
     system_prompt = """
 
