@@ -12,7 +12,6 @@ if "AWS_SESSION_TOKEN" in st.secrets:
     os.environ["AWS_SESSION_TOKEN"] = st.secrets["AWS_SESSION_TOKEN"]
 
 
-
 # from boto_testing import titan_multimodal_embedding
 from upsert_vectors import titan_text_embedding
 from claude_utils import ask_claude_vqa_response
