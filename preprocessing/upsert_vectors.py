@@ -11,18 +11,13 @@ from tqdm import tqdm
 import toml
 
 
-def load_streamlit_toml(file_path):
-    with open(file_path, "r") as f:
-        config = toml.load(f)
-    for key, value in config.items():
-        os.environ[key] = str(value)
-
-load_streamlit_toml(".streamlit/secrets.toml")
-
-
 load_dotenv()
 
-boto3_session = boto3.session.Session()
+boto3_session = boto3.session.Session(
+    aws_access_key_id=st.secrets["aws_access_key_id"],
+    aws_secret_access_key=st.secrets["aws_secret_access_key"],
+    aws_session_token=st.secrets["aws_session_token"],
+)
 region_name = 'us-east-1'
 
 
