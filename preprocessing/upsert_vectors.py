@@ -1,6 +1,6 @@
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
-from config import index_name
+from config import index_name, r
 import os
 import json
 import boto3
@@ -13,10 +13,10 @@ load_dotenv()
 
 
 boto3_session = boto3.session.Session()
-region_name = boto3_session.region_name
+region_name = 'us-east-1'
 bedrock_client = boto3.client(
     "bedrock-runtime",
-    region_name,
+    region_name=region_name,
 )
 
 
