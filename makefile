@@ -76,7 +76,6 @@ streamlit-secrets:
 	@echo "Creating secrets.toml file..."
 	@mkdir -p .streamlit
 	@touch .streamlit/secrets.toml
-	@echo "[general]" >> .streamlit/secrets.toml
 	@echo "PINECONE_API_KEY = \"$(PINECONE_API_KEY)\"" >> .streamlit/secrets.toml
 	@echo "AWS_ACCESS_KEY_ID = \"$(AWS_ACCESS_KEY_ID)\"" >> .streamlit/secrets.toml
 	@echo "AWS_SECRET_ACCESS_KEY = \"$(AWS_SECRET_ACCESS_KEY)\"" >> .streamlit/secrets.toml

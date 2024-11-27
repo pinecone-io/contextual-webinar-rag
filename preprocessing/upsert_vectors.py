@@ -1,6 +1,6 @@
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
-from config import index_name, r
+from config import index_name
 import os
 import json
 import boto3
