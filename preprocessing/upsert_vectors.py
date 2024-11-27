@@ -14,8 +14,8 @@ import toml
 load_dotenv()
 
 boto3_session = boto3.session.Session(
-    aws_access_key_id=st.secrets["aws_access_key_id"],
-    aws_secret_access_key=st.secrets["aws_secret_access_key"]
+    aws_access_key_id=st.secrets["AWD_ACCESS_KEY_ID"],
+    aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
 )
 region_name = 'us-east-1'
 
