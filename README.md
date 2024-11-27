@@ -25,17 +25,7 @@ save the access key, default region, and secret access key as environmental vari
 
 **You'll still need access to AWS Bedrock and Claude via Bedrock, as well as a Pinecone API Key**
 
-**For this branch, after setting up your environmental variables (Pinecone, AWS), you can simply run the following commands for the demo:**
-
-1. **Create the database and preprocess the data:**
-    ```sh
-    make setup
-    ```
-
-2. **Launch the Streamlit app:**
-    ```sh
-    streamlit run ./preprocessing/app.py
-    ```
+**For this branch, after setting up your environmental variables (Pinecone, AWS), you can simply run the create-conda-env, install-deps, and upsert commands for setup**
 
 To run the scripts locally, you can use the provided Makefile. Below are the available commands:
 1. **Create the .env file**:
