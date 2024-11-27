@@ -6,18 +6,32 @@ import json
 import boto3
 import base64
 import pandas as pd
+import streamlit as st
+from tqdm import tqdm
+import toml
 
 load_dotenv()
+# read in all variables in streamlit.toml, and set them as environment variables
+
+def load_streamlit_toml(file_path):
+    with open(file_path, "r") as f:
+        config = toml.load(f)
+    for key, value in config.items():
+        os.environ[key] = str(value)
+
+load_streamlit_toml(".streamlit/secrets.toml")
+
+
 
 # iterate over dataframe, and embed vectors using titan multimodal
 
-
 boto3_session = boto3.session.Session()
 region_name = 'us-east-1'
+
+
 bedrock_client = boto3.client(
     "bedrock-runtime",
-    region_name=region_name,
-)
+    region_name=region_name)
 
 
 # Embedding code
@@ -83,8 +97,6 @@ def titan_text_embedding(
 # transform dataframe into metadata, ids, and values (where values are the vectors)
 
 
-# use upsert_as_dataframe or whatever the function is to upsert the vectors into the index
-from tqdm import tqdm
 
 if __name__ == "__main__":
     # read in as json
