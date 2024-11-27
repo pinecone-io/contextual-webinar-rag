@@ -3,9 +3,12 @@ A simplified Contextual Video RAG implementation using Pinecone, AWS, and Claude
 
 Ever wanted to ask questions over your video data, such as Youtube, Zoom webinars, recorded meetings, etc? This application aims to create a RAG chatbot over these content using contextual retrieval and Pinecone, AWS, and Claude.
 
-This branch contains the **Streamlit Web App** version of the implementation. This allows you to run a local web app to interact with the RAG chatbot, and uses a makefile to make the data preprocessing smoother. Please read the following section to ensure you have the appropriate prerequisites before proceeding.
+This branch contains the **Demo Streamlit Web App** version of the implementation. This allows you to run a local web app to interact with the RAG chatbot, and uses a makefile to make the data preprocessing smoother. And, this version already has a sample video in the repo, so you can get started preprocessing and embedding. 
+
+Please read the following section to ensure you have the appropriate prerequisites before proceeding.
 
 If you'd rather work in Sagemaker Notebook, use the webinar-notebook branch above!
+If you'd rather make your own video dataset, use the main branch above!
 ## Before you Begin
 
 This repo presents the RAG solution in two ways: one using scripting and makefiles, to create a Streamlit application, and another using a notebook intended for use on Sagemaker.
@@ -21,6 +24,18 @@ save the access key, default region, and secret access key as environmental vari
 'aws sso login' if you have that setup.
 
 **You'll still need access to AWS Bedrock and Claude via Bedrock, as well as a Pinecone API Key**
+
+**For this branch, after setting up your environmental variables (Pinecone, AWS), you can simply run the following commands for the demo:**
+
+1. **Create the database and preprocess the data:**
+    ```sh
+    make setup
+    ```
+
+2. **Launch the Streamlit app:**
+    ```sh
+    streamlit run ./preprocessing/app.py
+    ```
 
 To run the scripts locally, you can use the provided Makefile. Below are the available commands:
 1. **Create the .env file**:

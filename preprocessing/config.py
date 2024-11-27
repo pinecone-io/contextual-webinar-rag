@@ -9,4 +9,4 @@ videos_dir = data_dir / "videos"
 
 # Pinecone variables that are helpful
 
-index_name = "test-vqa"
+index_name = "deployed-vqa"

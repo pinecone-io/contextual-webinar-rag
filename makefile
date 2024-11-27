@@ -61,8 +61,8 @@ run-app:
 	conda activate $(CONDA_ENV_NAME)
 	streamlit run $(APP_FILE)
 
-# Create the .env file for new users
-create-env:
+# Create the .env file for new users and setup streamlit secrets in case you need it
+new-dot-env:
 	@echo "Creating .env file..."
 	@touch $(ENV_FILE)
 	@echo "PINECONE_API_KEY=" >> $(ENV_FILE)
@@ -70,6 +70,18 @@ create-env:
 	@echo "AWS_SECRET_ACCESS_KEY=" >> $(ENV_FILE)
 	@echo "AWS_DEFAULT_REGION=" >> $(ENV_FILE)
 	@echo ".env file created. Please update it with your API keys."
+	# Create the secrets.toml file for Streamlit
+
+streamlit-secrets:
+	@echo "Creating secrets.toml file..."
+	@mkdir -p .streamlit
+	@touch .streamlit/secrets.toml
+	@echo "[general]" >> .streamlit/secrets.toml
+	@echo "PINECONE_API_KEY = \"$(PINECONE_API_KEY)\"" >> .streamlit/secrets.toml
+	@echo "AWS_ACCESS_KEY_ID = \"$(AWS_ACCESS_KEY_ID)\"" >> .streamlit/secrets.toml
+	@echo "AWS_SECRET_ACCESS_KEY = \"$(AWS_SECRET_ACCESS_KEY)\"" >> .streamlit/secrets.toml
+	@echo "AWS_DEFAULT_REGION = \"$(AWS_DEFAULT_REGION)\"" >> .streamlit/secrets.toml
+	@echo "secrets.toml file created. Please update it with your API keys if necessary."
 
 # Display available commands
 help:

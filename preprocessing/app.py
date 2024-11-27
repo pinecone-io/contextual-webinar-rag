@@ -8,13 +8,10 @@ from config import index_name
 
 # Initialize Pinecone
 from pinecone import Pinecone
-from dotenv import load_dotenv
 
-load_dotenv()
+# Load secrets from Streamlit secrets
+pc = Pinecone(api_key=st.secrets["PINECONE_API_KEY"])
 
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-# Define the Pinecone index name
-index_name = "test-vqa"
 index = pc.Index(index_name)
 
 # Streamlit app
