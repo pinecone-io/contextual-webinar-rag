@@ -15,8 +15,7 @@ load_dotenv()
 
 boto3_session = boto3.session.Session(
     aws_access_key_id=st.secrets["aws_access_key_id"],
-    aws_secret_access_key=st.secrets["aws_secret_access_key"],
-    aws_session_token=st.secrets["aws_session_token"],
+    aws_secret_access_key=st.secrets["aws_secret_access_key"]
 )
 region_name = 'us-east-1'
 
