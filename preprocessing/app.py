@@ -56,8 +56,8 @@ if st.button("Query"):
         # st.write(response)
         for r in response["matches"]:
             with st.expander(f"Match with Score: {r['score']}"):
+
                 st.markdown(f"**Score:** {r['score']}")
-                print(convert_to_streamlit_path(r["metadata"]["filepath"]))
                 st.image(convert_to_streamlit_path(r["metadata"]["filepath"]), caption="Matched Image")
                 st.markdown(f"**Transcript:** {r['metadata']['transcript']}")
                 st.markdown(
@@ -67,6 +67,11 @@ if st.button("Query"):
                 st.markdown(f"**Timestamp End:** {r['metadata']['timestamp_end']}")
 
         # ask claude for an explanation of the returned results.
+
+        # replace response["matches"]["metadata"]["filepath"] with transformed filepaths
+        final_responses = response["matches"]
+        for r in final_responses:
+            r["metadata"]["filepath"] = convert_to_streamlit_path(r["metadata"]["filepath"])
 
         claude_explanation = ask_claude_vqa_response(query_text, response["matches"])
         st.markdown(f"**Claude Explanation:** {claude_explanation}")
