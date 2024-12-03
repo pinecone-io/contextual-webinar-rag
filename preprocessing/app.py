@@ -30,11 +30,22 @@ pc = Pinecone(api_key=st.secrets["PINECONE_API_KEY"])
 
 index = pc.Index(index_name)
 
+sample_queries = [
+    "What is multilingual search?",
+    "How does Pinecone work?",
+    "Explain the concept of vector search.",
+    "What are the benefits of using AWS Bedrock?",
+    "How to integrate Claude with Pinecone?"
+]
+
 # Streamlit app
-st.title("Visual QA over Videos with Pinecone, Claude and AWS")
+st.title("Visual QA over Webinar Videos with Pinecone, Claude and AWS")
+
 
 # Input text for query
-query_text = st.text_input("Enter text to query the Pinecone index:")
+selected_query = st.selectbox("Select a sample query:", [""] + sample_queries)
+
+query_text = st.text_input("Enter text to query the Pinecone index:", selected_query)
 
 
 def convert_to_streamlit_path(path):
