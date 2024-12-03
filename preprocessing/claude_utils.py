@@ -1,7 +1,7 @@
-import json
 import logging
 import base64
 from botocore.exceptions import ClientError
+import streamlit as st
 
 
 MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
@@ -18,6 +18,12 @@ You should provide a response that is informative and helpful to the user, and y
 where that information came from.
 
 """
+
+
+aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"]
+aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"]
+#profile_name=st.secrets["AWS_PROFILE_NAME"]
+region_name = st.secrets["AWS_DEFAULT_REGION"]
 
 from anthropic import AnthropicBedrock
 
@@ -94,7 +100,9 @@ def ask_claude_vqa_response(user_query, vdb_response):
     Returns:
         str: The response from Claude.
     """
-    client = AnthropicBedrock(aws_region="us-east-1")
+    client = AnthropicBedrock(aws_region=region_name, 
+                              aws_access_key=aws_access_key_id, 
+                              aws_secret_key=aws_secret_access_key)
     messages = format_messages_for_claude(user_query, vdb_response)
     system_prompt = """
 
@@ -115,7 +123,9 @@ where the information they are looking for is located.
 
 def ask_claude(img, text):
     # best for one off queries
-    client = AnthropicBedrock(aws_region="us-east-1")
+    client = AnthropicBedrock(aws_region=region_name, 
+                              aws_access_key=aws_access_key_id, 
+                              aws_secret_key=aws_secret_access_key)
     if img:
         img_b64 = convert_image_to_base64(img)
         message = client.messages.create(
@@ -148,7 +158,9 @@ def ask_claude(img, text):
 
 
 def make_claude_transcript_summary(transcript):
-    client = AnthropicBedrock(aws_region="us-east-1")
+    client = AnthropicBedrock(aws_region=region_name, 
+                              aws_access_key=aws_access_key_id, 
+                              aws_secret_key=aws_secret_access_key)
 
     prompt = "Summarize the following transcript, being as concise as possible:"
     message = client.messages.create(
@@ -163,8 +175,6 @@ def create_contextual_frame_description(
     frame_caption_index, frame_caption_pairs, transcript_summary
 ):
     # frame caption pair will have an image, and a transcript. Window is in seconds
-    client = AnthropicBedrock(aws_region="us-east-1")
-
     # gather context, look 4 frame widths before and after. Make sure not to go out of bounds if near beginning or end of video.
 
     # surrounding_frames = frame_caption_pairs[max(0, frame_caption_index - 4 * frame_width):frame_caption_index + 1]

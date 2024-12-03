@@ -16,10 +16,9 @@ boto3_session = boto3.session.Session(
     aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
     #aws_session_token=st.secrets["AWS_SESSION_TOKEN"]
 )
-region_name = 'us-east-1'
+region_name = st.secrets["AWS_DEFAULT_REGION"]
 
-
-bedrock_client = boto3.client(
+bedrock_client = boto3_session.client(
     "bedrock-runtime",
     region_name=region_name)
 
