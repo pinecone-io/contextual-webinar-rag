@@ -34,6 +34,16 @@ st.title("Visual QA over Videos with Pinecone, Claude and AWS")
 # Input text for query
 query_text = st.text_input("Enter text to query the Pinecone index:")
 
+
+def convert_to_streamlit_path(path):
+    # get list of streamlit path images
+    root_path = "./data/frames/mlsearch_webinar"
+    # get image filename, which is last part and is always .png
+    image_filename = path.split("/")[-1]
+    return os.path.join(root_path,image_filename)
+    
+
+
 if st.button("Query"):
     if query_text:
         # Embed the query
@@ -47,7 +57,8 @@ if st.button("Query"):
         for r in response["matches"]:
             with st.expander(f"Match with Score: {r['score']}"):
                 st.markdown(f"**Score:** {r['score']}")
-                st.image(r["metadata"]["filepath"], caption="Matched Image")
+                print(convert_to_streamlit_path(r["metadata"]["filepath"]))
+                st.image(convert_to_streamlit_path(r["metadata"]["filepath"]), caption="Matched Image")
                 st.markdown(f"**Transcript:** {r['metadata']['transcript']}")
                 st.markdown(
                     f"**Contextual Frame Description:** {r['metadata']['contextual_frame_description']}"
