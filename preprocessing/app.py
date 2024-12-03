@@ -38,8 +38,46 @@ sample_queries = [
     "How to integrate Claude with Pinecone?"
 ]
 
+
+def convert_to_streamlit_path(path):
+    # get list of streamlit path images
+    root_path = "./data/frames/mlsearch_webinar"
+    # get image filename, which is last part and is always .png
+    image_filename = path.split("/")[-1]
+    return os.path.join(root_path,image_filename)
+
 # Streamlit app
 st.title("Visual QA over Webinar Videos with Pinecone, Claude and AWS")
+
+explanation = '''
+Welcome! This app demonstrates how to use Pinecone, Claude, and AWS to perform visual QA over webinar videos.
+
+The app takes an input query, conducts a semantic search over pre-embedded contextual transcript chunks in Pinecone,
+submits those results to Claude, and returns an explanation of the results.
+
+'''
+
+
+
+
+st.markdown(explanation)
+
+with st.expander("Application Architecture"):
+    diagram_path = "./diagrams"
+    diagram_1 = convert_to_streamlit_path("./diagrams/Video_Preprocessing.png")
+    diagram_2 = convert_to_streamlit_path("./diagrams/Contextual_Retrieval_With_Video_RAG.png")
+    diagram_3 = convert_to_streamlit_path("./diagrams/Pinecone_Upsertion.png")
+    diagram_4 = convert_to_streamlit_path("./diagrams/RAG_Workflow_for_Video_Contextual_RAG.png")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(diagram_1, caption="Video Preprocessing")
+        st.image(diagram_3, caption="Pinecone Upsertion")
+
+    with col2:
+        st.image(diagram_2, caption="Contextual Embeddings Process with Claude")
+        st.image(diagram_4, caption="RAG Workflow for Video Contextual RAG")
+
 
 
 # Input text for query
@@ -48,12 +86,7 @@ selected_query = st.selectbox("Select a sample query:", [""] + sample_queries)
 query_text = st.text_input("Enter text to query the Pinecone index:", selected_query)
 
 
-def convert_to_streamlit_path(path):
-    # get list of streamlit path images
-    root_path = "./data/frames/mlsearch_webinar"
-    # get image filename, which is last part and is always .png
-    image_filename = path.split("/")[-1]
-    return os.path.join(root_path,image_filename)
+
     
 
 
