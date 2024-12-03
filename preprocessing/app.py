@@ -64,10 +64,10 @@ st.markdown(explanation)
 
 with st.expander("Application Architecture"):
     diagram_path = "./diagrams"
-    diagram_1 = convert_to_streamlit_path("./diagrams/Video_Preprocessing.png")
-    diagram_2 = convert_to_streamlit_path("./diagrams/Contextual_Retrieval_With_Video_RAG.png")
-    diagram_3 = convert_to_streamlit_path("./diagrams/Pinecone_Upsertion.png")
-    diagram_4 = convert_to_streamlit_path("./diagrams/RAG_Workflow_for_Video_Contextual_RAG.png")
+    diagram_1 = "./diagrams/Video_Preprocessing.png"
+    diagram_2 = "./diagrams/Contextual_Retrieval_With_Video_RAG.png"
+    diagram_3 = "./diagrams/Pinecone_Upsertion.png"
+    diagram_4 = "./diagrams/RAG_Workflow_for_Video_Contextual_RAG.png"
 
     col1, col2 = st.columns(2)
     with col1:
