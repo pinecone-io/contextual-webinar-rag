@@ -31,7 +31,6 @@ pc = Pinecone(api_key=st.secrets["PINECONE_API_KEY"])
 index = pc.Index(index_name)
 
 sample_queries = [
-    "The interview spoke about Madlib for robots. What's that about?",
     "At some point, the presenter makes an aside on marriage cultural nuances. What was meant by this?",
     "There was a diagram on screen with a bunch of arrows and something about paired training. Explain this concept to me, again",
     "Explain crosslingual and monolingual search with Pinecone through codeblocks.",
