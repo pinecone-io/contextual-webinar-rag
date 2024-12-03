@@ -31,11 +31,12 @@ pc = Pinecone(api_key=st.secrets["PINECONE_API_KEY"])
 index = pc.Index(index_name)
 
 sample_queries = [
-    "What is multilingual search?",
-    "How does Pinecone work?",
-    "Explain the concept of vector search.",
-    "What are the benefits of using AWS Bedrock?",
-    "How to integrate Claude with Pinecone?"
+    "The interview spoke about Madlib for robots. What's that about?",
+    "At some point, the presenter makes an aside on marriage cultural nuances. What was meant by this?",
+    "There was a diagram on screen with a bunch of arrows and something about paired training. Explain this concept to me, again",
+    "Explain crosslingual and monolingual search with Pinecone through codeblocks.",
+    '''The presenter spoke about the kinds of data used to finetune multilingual llms, 
+    and the data innovations concerning e5. What were they?''',
 ]
 
 
@@ -56,8 +57,6 @@ The app takes an input query, conducts a semantic search over pre-embedded conte
 submits those results to Claude, and returns an explanation of the results.
 
 '''
-
-
 
 
 st.markdown(explanation)
