@@ -14,6 +14,8 @@ if "AWS_SESSION_TOKEN" in st.secrets:
     os.environ["AWS_SESSION_TOKEN"] = st.secrets["AWS_SESSION_TOKEN"]
 load_dotenv()
 
+# Add the starting timestamp in seconds to the youtube url to get the video at that time
+BASE_URL = "https://youtu.be/moHIBWZiYdY?feature=shared&t="
 
 # from boto_testing import titan_multimodal_embedding
 from upsert_vectors import titan_text_embedding
@@ -63,8 +65,21 @@ if st.button("Query"):
                 st.markdown(
                     f"**Contextual Frame Description:** {r['metadata']['contextual_frame_description']}"
                 )
-                st.markdown(f"**Timestamp Start:** {r['metadata']['timestamp_start']}")
-                st.markdown(f"**Timestamp End:** {r['metadata']['timestamp_end']}")
+
+                start_time = r["metadata"]["timestamp_start"]
+                end_time = r["metadata"]["timestamp_end"]
+
+                st.markdown(f"**Timestamp Start:** {start_time}")
+                st.markdown(f"**Timestamp End:** {end_time}")
+                
+                
+                youtube_url = BASE_URL + str(r["metadata"]["timestamp_start"])
+
+
+                st.markdown(f"[Watch on YouTube]({youtube_url})")
+                st.markdown("Watch the clip:")
+                st.video(data=youtube_url, start_time=int(start_time),
+                         end_time=int(end_time))
 
         # ask claude for an explanation of the returned results.
 
