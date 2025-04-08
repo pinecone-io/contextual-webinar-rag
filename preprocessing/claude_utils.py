@@ -4,7 +4,8 @@ from botocore.exceptions import ClientError
 import streamlit as st
 
 
-MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
+BEDROCK_MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
+ANTHROPIC_MODEL = "claude-3-5-haiku-latest"
 MAX_TOKENS = 256
 system_prompt = """
 You are an expert in the field of AI, and are assistant employees of an AI company on searching over their webinars and 
@@ -24,8 +25,9 @@ aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"]
 aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"]
 #profile_name=st.secrets["AWS_PROFILE_NAME"]
 region_name = st.secrets["AWS_DEFAULT_REGION"]
+anthropic_api_key = st.secrets["ANTHROPIC_API_KEY"]
 
-from anthropic import AnthropicBedrock
+from anthropic import AnthropicBedrock, Anthropic
 
 # Logger setup
 logger = logging.getLogger(__name__)
@@ -89,23 +91,29 @@ def format_messages_for_claude(user_query, vdb_response):
     return messages
 
 
-def ask_claude_vqa_response(user_query, vdb_response):
+def ask_claude_vqa_response(user_query, vdb_response, use_bedrock=True):
     """
     Sends the user's query and the vector database response to Claude and gets a response.
 
     Args:
         user_query (str): The user's query.
         vdb_response (list): The response from the vector database, containing images and text.
+        use_bedrock (bool): Whether to use AWS Bedrock or direct Anthropic API. Defaults to True.
 
     Returns:
         str: The response from Claude.
     """
-    client = AnthropicBedrock(aws_region=region_name, 
+    if use_bedrock:
+        client = AnthropicBedrock(aws_region=region_name, 
                               aws_access_key=aws_access_key_id, 
                               aws_secret_key=aws_secret_access_key)
+        model = BEDROCK_MODEL
+    else:
+        client = Anthropic(api_key=anthropic_api_key)
+        model = ANTHROPIC_MODEL
+        
     messages = format_messages_for_claude(user_query, vdb_response)
     system_prompt = """
-
 You are a friendly assistant helping people interpret their videos at their company.
 
 You will recieve frames of these videos, with descriptions of what has happened in the frames, as well as a user query
@@ -116,20 +124,25 @@ Refer back to the images and text provided to guide the user to the appropriate 
 where the information they are looking for is located.
     """
     response = client.messages.create(
-        model=MODEL, max_tokens=MAX_TOKENS * 10, system=system_prompt, messages=messages
+        model=model, max_tokens=MAX_TOKENS * 10, system=system_prompt, messages=messages
     )
     return response.content[0].text
 
 
-def ask_claude(img, text):
+def ask_claude(img, text, use_bedrock=True):
     # best for one off queries
-    client = AnthropicBedrock(aws_region=region_name, 
+    if use_bedrock:
+        client = AnthropicBedrock(aws_region=region_name, 
                               aws_access_key=aws_access_key_id, 
                               aws_secret_key=aws_secret_access_key)
+        model = BEDROCK_MODEL
+    else:
+        client = Anthropic(api_key=anthropic_api_key)
+        model = ANTHROPIC_MODEL
     if img:
         img_b64 = convert_image_to_base64(img)
         message = client.messages.create(
-            model=MODEL,
+            model=model,
             max_tokens=MAX_TOKENS,
             messages=[
                 {
@@ -150,21 +163,26 @@ def ask_claude(img, text):
         )
     else:
         message = client.messages.create(
-            model=MODEL,
+            model=model,
             max_tokens=MAX_TOKENS,
             messages=[{"role": "user", "content": text}],
         )
     return message.content[0].text
 
 
-def make_claude_transcript_summary(transcript):
-    client = AnthropicBedrock(aws_region=region_name, 
+def make_claude_transcript_summary(transcript, use_bedrock=True):
+    if use_bedrock:
+        client = AnthropicBedrock(aws_region=region_name, 
                               aws_access_key=aws_access_key_id, 
                               aws_secret_key=aws_secret_access_key)
-
+        model = BEDROCK_MODEL
+    else:
+        client = Anthropic(api_key=anthropic_api_key)
+        model = ANTHROPIC_MODEL
+    
     prompt = "Summarize the following transcript, being as concise as possible:"
     message = client.messages.create(
-        model=MODEL,
+        model=model,
         messages=[{"role": "user", "content": prompt + ": " + transcript}],
         max_tokens=MAX_TOKENS,
     )
@@ -172,7 +190,7 @@ def make_claude_transcript_summary(transcript):
 
 
 def create_contextual_frame_description(
-    frame_caption_index, frame_caption_pairs, transcript_summary
+    frame_caption_index, frame_caption_pairs, transcript_summary, use_bedrock=True
 ):
     # frame caption pair will have an image, and a transcript. Window is in seconds
     # gather context, look 4 frame widths before and after. Make sure not to go out of bounds if near beginning or end of video.
@@ -203,5 +221,5 @@ def create_contextual_frame_description(
     Description:
     """
 
-    rich_summary = ask_claude(img=current_frame["frame_path"], text=meta_prompt)
+    rich_summary = ask_claude(img=current_frame["frame_path"], text=meta_prompt, use_bedrock=use_bedrock)
     return rich_summary
