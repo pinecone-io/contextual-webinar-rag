@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least-privilege GITHUB_TOKEN: these jobs only read the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Proves the pinned dependency set in requirements.txt actually resolves and
+  # installs together on a supported interpreter, and that the repo's own Python
+  # byte-compiles. This is the gate that makes dependency bumps reviewable.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Byte-compile sources
+        run: python -m compileall -q preprocessing __init__.py
+
+  # Surfaces vulnerable dependencies on every change. Non-blocking so a fresh
+  # advisory can't wedge unrelated PRs, but it keeps audit status in the logs.
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: pip-audit (advisory)
+        run: |
+          python -m pip install --upgrade pip pip-audit
+          pip-audit -r requirements.txt || true
