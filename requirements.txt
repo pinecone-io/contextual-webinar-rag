@@ -8,4 +8,4 @@ python-dotenv==1.2.2
 streamlit==1.54.0
 torch==2.9.1
 tqdm==4.66.3
-transformers==4.53.0
+transformers==5.15.0
